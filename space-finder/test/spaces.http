@@ -1,1 +1,6 @@
 GET https://m24ok20lgj.execute-api.us-east-1.amazonaws.com/prod/spaces
+
+
+###
+GET  https://gvpkhbn533pcrscj2bnm2r5gde0gvpum.lambda-url.us-east-1.on.aws/
+

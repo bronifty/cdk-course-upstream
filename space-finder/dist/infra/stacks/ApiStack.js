@@ -33,7 +33,6 @@ class ApiStack extends cdk.Stack {
         spacesResource.addMethod("GET", props.helloLambdaIntegration);
         new cdk.CfnOutput(this, "apiUrl", {
             value: api.url,
-            description: "API Gateway URL",
         });
     }
 }

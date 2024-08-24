@@ -11,18 +11,26 @@ export class LambdaStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: LambdaStackProps) {
     super(scope, id, props);
 
-    const helloLambda = new cdk.aws_lambda.Function(this, "HelloLambda", {
-      runtime: cdk.aws_lambda.Runtime.NODEJS_LATEST,
-      handler: "hello.handler",
-      code: cdk.aws_lambda.Code.fromAsset(
-        `${FsUtils.getProjectRoot()}/dist/services`
-      ),
-      environment: {
-        TABLE_NAME: props.spacesTable.tableName,
-      },
-    });
+    const helloLambda = new cdk.aws_lambda_nodejs.NodejsFunction(
+      this,
+      "HelloLambda",
+      {
+        runtime: cdk.aws_lambda.Runtime.NODEJS_LATEST,
+        handler: "handler",
+        entry: `${FsUtils.getProjectRoot()}/src/services/index.ts`,
+        environment: {
+          TABLE_NAME: props.spacesTable.tableName,
+        },
+      }
+    );
     this.helloLambdaIntegration = new cdk.aws_apigateway.LambdaIntegration(
       helloLambda
     );
+    const functionUrl = helloLambda.addFunctionUrl({
+      authType: cdk.aws_lambda.FunctionUrlAuthType.NONE,
+    });
+    new cdk.CfnOutput(this, "FunctionUrl", {
+      value: functionUrl.url,
+    });
   }
 }

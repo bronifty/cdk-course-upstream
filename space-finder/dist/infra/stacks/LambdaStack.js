@@ -29,15 +29,21 @@ const FsUtils = __importStar(require("@bronifty/fs-utils"));
 class LambdaStack extends cdk.Stack {
     constructor(scope, id, props) {
         super(scope, id, props);
-        const helloLambda = new cdk.aws_lambda.Function(this, "HelloLambda", {
+        const helloLambda = new cdk.aws_lambda_nodejs.NodejsFunction(this, "HelloLambda", {
             runtime: cdk.aws_lambda.Runtime.NODEJS_LATEST,
-            handler: "hello.handler",
+            handler: "index.handler",
             code: cdk.aws_lambda.Code.fromAsset(`${FsUtils.getProjectRoot()}/dist/services`),
             environment: {
                 TABLE_NAME: props.spacesTable.tableName,
             },
         });
         this.helloLambdaIntegration = new cdk.aws_apigateway.LambdaIntegration(helloLambda);
+        const functionUrl = helloLambda.addFunctionUrl({
+            authType: cdk.aws_lambda.FunctionUrlAuthType.NONE,
+        });
+        new cdk.CfnOutput(this, "FunctionUrl", {
+            value: functionUrl.url,
+        });
     }
 }
 exports.LambdaStack = LambdaStack;

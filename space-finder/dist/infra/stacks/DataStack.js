@@ -42,7 +42,6 @@ class DataStack extends cdk.Stack {
         this.spacesTable = table;
         new cdk.CfnOutput(this, "tableName", {
             value: table.tableName,
-            description: "Table Name",
         });
     }
 }
